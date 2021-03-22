@@ -1,0 +1,33 @@
+﻿@using learndotnetcore.Models;
+@model List<Student>;
+<h1>@ViewBag.newMessage</h1>
+
+<table>
+    <tr>
+        <th>Id</th>
+        <th>Name</th>
+        <th>Marks</th>
+        <th>Status</th>
+    </tr>
+    @foreach(var item in Model)
+    {
+        <tr>
+            <td>@item.Id</td>
+            <td>@item.Name</td>
+            <td>@item.Marks</td>
+            @if(item.Marks > 35)
+            {
+                <td>Passed</td>
+            }
+            else
+            {
+                <td>Failed</td>
+            }
+        </tr>
+    }
+</table>
+<style>
+    table, th, td {
+        border: 1px solid black;
+    }
+</style>
