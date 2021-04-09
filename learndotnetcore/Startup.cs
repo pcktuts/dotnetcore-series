@@ -37,6 +37,7 @@ namespace learndotnetcore
             {
                 app.UseDeveloperExceptionPage();
             }
+            app.UseStaticFiles();
 
             app.UseRouting();
 
