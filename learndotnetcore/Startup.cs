@@ -46,7 +46,7 @@ namespace learndotnetcore
            
             endpoints.MapControllerRoute(
                 name: "default",
-                pattern: "{Controller=Home}/{action=Index}/{id?}"
+                pattern: "{Controller=Movies}/{action=Index}/{id?}"
                   );
             });
         }
