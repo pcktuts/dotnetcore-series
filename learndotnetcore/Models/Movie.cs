@@ -19,6 +19,7 @@ namespace learndotnetcore.Models
         public DateTime ReleaseDate { get; set; }
         public string Genre { get; set; }  
         [Range(100, 1000, ErrorMessage = "Invalid price")]
+
         public decimal Price { get; set; }
     }
 }
