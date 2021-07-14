@@ -29,13 +29,14 @@ namespace learndotnetcore
             services.AddControllersWithViews();
             services.AddDbContext<MvcMovieContext>(options =>
              options.UseSqlServer(Configuration.GetConnectionString("MvcMovieContext")));
-            services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
+            services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = false)
                 .AddEntityFrameworkStores<MvcMovieContext>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
+            
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
@@ -51,6 +52,7 @@ namespace learndotnetcore
             app.UseRouting();
             app.UseAuthentication();
             app.UseAuthorization();
+           
 
             app.UseEndpoints(endpoints =>
             {

@@ -7,29 +7,26 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using learndotnetcore.Data;
 using learndotnetcore.Models;
-using Microsoft.AspNetCore.Authorization;
-
 
 namespace learndotnetcore.controllers
 {
-    [Authorize]
-    public class MoviesController : Controller
+    public class ReviewsController : Controller
     {
         private readonly MvcMovieContext _context;
 
-        public MoviesController(MvcMovieContext context)
+        public ReviewsController(MvcMovieContext context)
         {
             _context = context;
         }
 
-        // GET: Movies
-        [AllowAnonymous]
+        // GET: Reviews
         public async Task<IActionResult> Index()
         {
-            return View(await _context.Movie.ToListAsync());
+            var mvcMovieContext = _context.Review.Include(r => r.Moive);
+            return View(await mvcMovieContext.ToListAsync());
         }
 
-        // GET: Movies/Details/5
+        // GET: Reviews/Details/5
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
@@ -37,40 +34,42 @@ namespace learndotnetcore.controllers
                 return NotFound();
             }
 
-            var movie = await _context.Movie
-                .FirstOrDefaultAsync(m => m.Id == id);
-            if (movie == null)
+            var review = await _context.Review
+                .Include(r => r.Moive)
+                .FirstOrDefaultAsync(m => m.ReviewId == id);
+            if (review == null)
             {
                 return NotFound();
             }
 
-            return View(movie);
+            return View(review);
         }
 
-        // GET: Movies/Create
-        
+        // GET: Reviews/Create
         public IActionResult Create()
         {
+            ViewData["MovieId"] = new SelectList(_context.Movie, "Id", "Title");
             return View();
         }
 
-        // POST: Movies/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to, for 
-        // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+        // POST: Reviews/Create
+        // To protect from overposting attacks, enable the specific properties you want to bind to.
+        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Title,ReleaseDate,Genre,Price")] Movie movie)
+        public async Task<IActionResult> Create([Bind("ReviewId,Title,Content,MovieId")] Review review)
         {
             if (ModelState.IsValid)
             {
-                _context.Add(movie);
+                _context.Add(review);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            return View(movie);
+            ViewData["MovieId"] = new SelectList(_context.Movie, "Id", "Title", review.MovieId);
+            return View(review);
         }
 
-        // GET: Movies/Edit/5
+        // GET: Reviews/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -78,22 +77,23 @@ namespace learndotnetcore.controllers
                 return NotFound();
             }
 
-            var movie = await _context.Movie.FindAsync(id);
-            if (movie == null)
+            var review = await _context.Review.FindAsync(id);
+            if (review == null)
             {
                 return NotFound();
             }
-            return View(movie);
+            ViewData["MovieId"] = new SelectList(_context.Movie, "Id", "Title", review.MovieId);
+            return View(review);
         }
 
-        // POST: Movies/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to, for 
-        // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+        // POST: Reviews/Edit/5
+        // To protect from overposting attacks, enable the specific properties you want to bind to.
+        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Title,ReleaseDate,Genre,Price")] Movie movie)
+        public async Task<IActionResult> Edit(int id, [Bind("ReviewId,Title,Content,MovieId")] Review review)
         {
-            if (id != movie.Id)
+            if (id != review.ReviewId)
             {
                 return NotFound();
             }
@@ -102,12 +102,12 @@ namespace learndotnetcore.controllers
             {
                 try
                 {
-                    _context.Update(movie);
+                    _context.Update(review);
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!MovieExists(movie.Id))
+                    if (!ReviewExists(review.ReviewId))
                     {
                         return NotFound();
                     }
@@ -118,10 +118,11 @@ namespace learndotnetcore.controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            return View(movie);
+            ViewData["MovieId"] = new SelectList(_context.Movie, "Id", "Title", review.MovieId);
+            return View(review);
         }
 
-        // GET: Movies/Delete/5
+        // GET: Reviews/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -129,30 +130,31 @@ namespace learndotnetcore.controllers
                 return NotFound();
             }
 
-            var movie = await _context.Movie
-                .FirstOrDefaultAsync(m => m.Id == id);
-            if (movie == null)
+            var review = await _context.Review
+                .Include(r => r.Moive)
+                .FirstOrDefaultAsync(m => m.ReviewId == id);
+            if (review == null)
             {
                 return NotFound();
             }
 
-            return View(movie);
+            return View(review);
         }
 
-        // POST: Movies/Delete/5
+        // POST: Reviews/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var movie = await _context.Movie.FindAsync(id);
-            _context.Movie.Remove(movie);
+            var review = await _context.Review.FindAsync(id);
+            _context.Review.Remove(review);
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 
-        private bool MovieExists(int id)
+        private bool ReviewExists(int id)
         {
-            return _context.Movie.Any(e => e.Id == id);
+            return _context.Review.Any(e => e.ReviewId == id);
         }
     }
 }
