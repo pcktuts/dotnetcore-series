@@ -17,7 +17,7 @@ namespace learndotnetcore.Data
 
         public DbSet<Movie> Movie { get; set; }
 
-        public DbSet<learndotnetcore.Models.Review> Review { get; set; }
+        public DbSet<Review> Review { get; set; }
         
     }
 }
